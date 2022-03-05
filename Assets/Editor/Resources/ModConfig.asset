@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
+  m_Name: ModConfig
+  m_EditorClassIdentifier: 
+  id: Paperweights
+  title: Paperweights
+  author: me
+  description: "In perfect balance,\r\n\t             as all things should be.\n\nPlace
+    all the paperweights on the module such that the scale is perfectly balanced.\n\nMade
+    for Modding Jam #3: Duality (who the fuck chose this)\n\nThanks to Aero for helping
+    with the scale model.\n\nThe manual can be found at ktane.timwi.de, or in the
+    manuals folder of your game.\n\nIf there are any bugs, contact Fartlicker777#9169
+    on Discord."
+  version: 
+  outputFolder: build
+  previewImage: {fileID: 2800000, guid: 9e4f1bed631f2e740abba840dc485bbb, type: 3}
