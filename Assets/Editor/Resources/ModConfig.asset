@@ -22,4 +22,4 @@ MonoBehaviour:
     on Discord."
   version: 
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: 9e4f1bed631f2e740abba840dc485bbb, type: 3}
+  previewImage: {fileID: 2800000, guid: 25f31cb6a685cc048b9cb87b0513afba, type: 3}
