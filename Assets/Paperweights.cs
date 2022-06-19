@@ -153,11 +153,14 @@ public class Paperweights : MonoBehaviour {
    void Start () {
       CalculateWeights();
       string[] ColorNames = { "black", "cyan", "yellow", "red", "blue", "green", "white", "magenta"};
-      Debug.LogFormat("[Paperweights #{0}] Both sides must equal {1}.", ModuleId, Solution.Sum() / 2);
+      Debug.LogFormat("[Paperweights #{0}] Both sides must have a combined weight of {1}.", ModuleId, Solution.Sum() / 2);
       for (int i = 0; i < 8; i++) {
          Debug.LogFormat("[Paperweights #{0}] The {1} paperweight has a weight of {2}.", ModuleId, ColorNames[i], Solution[i]);
       }
-   }
+      for (int i = 0; i < 2; i++) {
+         Debug.LogFormat("[Paperweights #{0}] On {1} side of the scale you could put the following paperweights: {2}.", ModuleId, i == 0 ? "one" : "the other" , Generation[i].Select(a => ColorNames[Array.IndexOf(Solution, a)]).Join(", "));
+      }
+    }
 
    void CalculateWeights () {
       for (int i = 0; i < 2; i++) {
@@ -183,6 +186,10 @@ public class Paperweights : MonoBehaviour {
       for (int i = 0; i < 8; i++) {
          Solution[i] = Generation[i / 4][i % 4];
       }
+      while (Solution.Take(4).Sum() == Solution.Skip(4).Sum())
+         Solution.Shuffle();
+      //Debug.LogFormat("[{0}]", Generation.Select(a => a.Join(", ")).Join("], ["));
+      //Debug.LogFormat("{0}", Solution.Join(", "));
    }
 
    void UpdateDifference (int Weight) {
@@ -302,17 +309,45 @@ public class Paperweights : MonoBehaviour {
    }
 
 #pragma warning disable 414
-   private readonly string TwitchHelpMessage = @"Use !{0} KBCGORWM to press that colored paperweight. Use !{0} left/right to press that side of the scale.";
+   private readonly string TwitchHelpMessage = "\"!{0} KBCGORWM\" [Press that colored paperweight in association with the first letter of the color name, K = Black] \"!{0} left/right\" [Press the left/right side of the scale.] All of these can be chained using spaces. I.E. \"!{0} left KOBM right CGRW\"";
 #pragma warning restore 414
+    string l = "KCORBGWM";
+    IEnumerator ProcessTwitchCommand(string Command) {
+        Command = Command.Trim().ToUpper();
+        var commandPortionsAll = Command.Split();
+        var allBtnsToPress = new List<KMSelectable>();
+        foreach (var cmdPortion in commandPortionsAll)
+        {
+            if (cmdPortion == "LEFT")
+                allBtnsToPress.Add(Bowls[0]);
+            else if (cmdPortion == "RIGHT")
+                allBtnsToPress.Add(Bowls[1]);
+            else
+            {
+                foreach (var chr in cmdPortion)
+                {
+                    var idx = l.IndexOf(chr);
+                    if (idx == -1)
+                    {
+                        yield return string.Format("sendtochaterror I don't understand what you meant by this: \"{0}\"!", chr);
+                        yield break;
+                    }
+                    allBtnsToPress.Add(Balls[idx]);
+                }
+            }
+        }
 
-   IEnumerator ProcessTwitchCommand (string Command) {
-      Command = Command.Trim().ToUpper();
-      yield return null;
-      if (!Command.Contains("KBCGORWM") && Command.Length != 1 && Command != "LEFT" && Command != "RIGHT") {
+        yield return null;
+        foreach (var btn in allBtnsToPress)
+        {
+            btn.OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        /*
+      if (!Command.Contains(l) && Command.Length != 1 && Command != "LEFT" && Command != "RIGHT") {
          yield return "sendtochaterror I don't understand!";
       }
       else if (Command.Length == 1) {
-         string l = "KCYRBGWM";
          Balls[l.IndexOf(Command)].OnInteract();
       }
       else if (Command == "LEFT") {
@@ -321,10 +356,10 @@ public class Paperweights : MonoBehaviour {
       else {
          Bowls[1].OnInteract();
       }
-   }
+        */
+    }
 
    IEnumerator TwitchHandleForcedSolve () {
-      string l = "KCYRBGWM";
       for (int i = 0; i < 8; i++) {
          if (BallPlacement[i] != Placements.None) {
             yield return ProcessTwitchCommand(l[i].ToString());
