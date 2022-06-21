@@ -308,18 +308,21 @@ public class Paperweights : MonoBehaviour {
    IEnumerator ProcessTwitchCommand (string Command) {
       Command = Command.Trim().ToUpper();
       yield return null;
-      if (!Command.Contains("KBCGORWM") && Command.Length != 1 && Command != "LEFT" && Command != "RIGHT") {
+      if (Command != "LEFT" && Command != "RIGHT" && !"KBCGORWM".Any(x => Command.Contains(x))) {
          yield return "sendtochaterror I don't understand!";
-      }
-      else if (Command.Length == 1) {
-         string l = "KCYRBGWM";
-         Balls[l.IndexOf(Command)].OnInteract();
       }
       else if (Command == "LEFT") {
          Bowls[0].OnInteract();
       }
-      else {
+      else if (Command == "RIGHT") {
          Bowls[1].OnInteract();
+      }
+      else {
+         string l = "KCYRBGWM";
+         for (int i = 0; i < Command.Length; i++) {
+            Balls[l.IndexOf(Command[i])].OnInteract();
+            yield return new WaitForSeconds(.1f);
+         }
       }
    }
 
