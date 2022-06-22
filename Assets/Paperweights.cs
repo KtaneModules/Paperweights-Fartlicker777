@@ -353,7 +353,7 @@ public class Paperweights : MonoBehaviour {
       else if (Command == "LEFT") {
          Bowls[0].OnInteract();
       }
-      else {
+      else if (Command == "RIGHT") {
          Bowls[1].OnInteract();
       }
         */
